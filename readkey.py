@@ -1,16 +1,17 @@
-import evdev
-from evdev import InputDevice, categorize, ecodes 
+from evdev import InputDevice, categorize, ecodes , list_devices
 
+
+sayodev = '/dev/input/event15'
 sayodev = None
 dev = None
-devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+devices = [InputDevice(path) for path in list_devices()]
 print("From", devices)
 for device in devices:
-    print(device.path, device.name, device.phys)
     if device.name.startswith("SayoDevice SayoDevice O2L"):
         print("A hit!")
         sayodev = device.path
         break
+    print(device.path, device.name, device.phys)
 if sayodev:
   dev = InputDevice(sayodev)
   #print("Have", dev.leds(verbose=True)) #empty
