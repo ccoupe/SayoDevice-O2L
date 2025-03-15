@@ -1,32 +1,24 @@
 from evdev import InputDevice, categorize, ecodes , list_devices
 import paho.mqtt.client as mqtt
 import json
+import Settings
+import sys
+import argparse
+import logging
 
+hmqtt = None
+settings = None
 
-sayopath = None
-sayodev = None
-devices = [InputDevice(path) for path in list_devices()]
-for device in devices:
-    if device.name.startswith("SayoDevice SayoDevice O2L"):
-        print("A hit!")
-        sayopath = device.path
-        break
-    print(device.path, device.name, device.phys)
-if sayopath:
-  dev = InputDevice(sayodev)
-  #print("Have", dev.leds(verbose=True)) #empty
-  #print("active_keys", dev.active_keys(verbose=True)) #empty
-  #print(device.capabilities(verbose=True))
-else:
-  print("Not Found!!!")
-print("Begin loop, Ctrl-C to exit")
-for event in dev.read_loop():
-  if event.type == ecodes.EV_KEY:
-    if event.code == 44 and event.value == 1: # 1 is key down
-      print('left key')
-    if event.code == 45 and event.value == 1:
-      print('right key')
+def mqtt_conn_init(st):
+  global hmqtt
+  hmqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, st.mqtt_client_name, False)
+  hmqtt.connect(st.mqtt_server_ip, st.mqtt_port)
+  
+  hmqtt.publish(st.topic, None, qos=1,retain=False)
       
+  # hmqtt.on_message = mqtt_message
+  hmqtt.loop_start()
+     
 def main():
   global settings, hmqtt
   loglevels = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
@@ -49,10 +41,18 @@ def main():
   else:
     logging.basicConfig(level=logging.INFO,datefmt="%H:%M:%S",format='%(asctime)s %(levelname)-5s %(message)s')
   
-  settings = Settings(args["conf"])
-  verify(settings.
+  settings = Settings.Settings(args["conf"])
   mqtt_conn_init(settings)
-	
+  
+  for event in settings.keydev.read_loop():
+    if event.type == ecodes.EV_KEY:
+      if event.code == 44 and event.value == 1: # 1 is key down
+        hmqtt.publish(settings.topic, settings.left, qos=1,retain=False)
+        #print('left key')
+      if event.code == 45 and event.value == 1:
+        hmqtt.publish(settings.topic, settings.right, qos=1,retain=False)
+        #print('right key')
+
 if __name__ == '__main__':
   sys.exit(main())
 
