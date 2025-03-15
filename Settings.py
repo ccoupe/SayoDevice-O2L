@@ -18,12 +18,14 @@ class Settings:
     self.left = conf.get('left','start')
     self.right = conf.get('right', 'halt')
     devices = [InputDevice(path) for path in list_devices()]
-    #print("From", devices)
+    print("From", devices)
     for device in devices:
       if device.name.startswith(self.sayodev):
-        #print("A hit!")
-        sayopath = device.path
+        print("Found one")
+        self.sayopath = device.path
         break
-      #print(device.path, device.name, device.phys)
-    if sayopath:
-      self.keydev = InputDevice(sayopath)
+      print(device.path, device.name, device.phys)
+    if self.sayopath:
+      self.keydev = InputDevice(self.sayopath)
+    else:
+      print("Failed to find a SayoDevice")

@@ -5,6 +5,7 @@ import Settings
 import sys
 import argparse
 import logging
+import logging.handlers
 
 hmqtt = None
 settings = None
@@ -43,6 +44,8 @@ def main():
   
   settings = Settings.Settings(args["conf"])
   mqtt_conn_init(settings)
+  
+  settings.keydev.grab() # magic
   
   for event in settings.keydev.read_loop():
     if event.type == ecodes.EV_KEY:
