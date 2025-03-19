@@ -1,0 +1,11 @@
+[Unit]
+Description=MQTT SayoDevice Keypad
+After=xdg-desktop-portal-rewrite-launchers.service
+
+[Service]
+ExecStart=/usr/local/lib/sayodevice/sayodevice.sh
+Restart=on-abort
+
+[Install]
+WantedBy=default.target
+#After=xdg-desktop-autostart.target

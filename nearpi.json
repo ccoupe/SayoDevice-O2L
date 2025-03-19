@@ -1,0 +1,10 @@
+{
+    "mqtt_server_ip": "192.168.1.2",
+    "homie_device": "nearpi_sayo",
+    "topic": "homie/near_bear/speech/control/set",
+    "left": "chat",
+    "right" "stop",
+    "name": "SayoDevice SayoDevice O2L",
+    "idVendor": "8089",
+    "idProduct": "000c"
+}
