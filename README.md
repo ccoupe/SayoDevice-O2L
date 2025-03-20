@@ -37,4 +37,5 @@ from systemd (--user) but it can't be
 Is more sophisticated. It can detect the insertion and removal 
 of the SayoDevice, attach to it and direct it. It could be written in C, Go 
 or Python. Currently, Python. It is not a full device driver and is started
-by systemd --user in /etc/xdg/systemd/user
+by systemd --user in /etc/xdg/systemd/user. This requires the 51-sayodevice.rules
+file in /etc/udev/rules.d (or possibly /usr/lib/
